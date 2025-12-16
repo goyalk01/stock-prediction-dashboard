@@ -1,0 +1,8 @@
+__pycache__/
+env/
+.env
+data/cache/
+data/logs/
+data/processed/
+saved_models/
+*.pyc

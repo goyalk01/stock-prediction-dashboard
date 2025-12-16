@@ -1,0 +1,7 @@
+{
+  "Technology": ["AAPL", "GOOGL", "MSFT", "NVDA"],
+  "Consumer Discretionary": ["TSLA", "AMZN"],
+  "Communication Services": ["META"],
+  "Healthcare": ["JNJ", "PFE"],
+  "Financial Services": ["JPM", "BAC"]
+}
