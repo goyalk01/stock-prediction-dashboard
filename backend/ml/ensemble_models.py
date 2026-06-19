@@ -63,16 +63,18 @@ class TabularEnsembleForecaster:
         self.last_feature_row: pd.DataFrame | None = None
 
     def _frame(self, data: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
-        available_features = [col for col in self.features if col in data.columns]
-        if "Close" not in data.columns:
-            raise ValueError("Close column is required for forecasting")
-        if not available_features:
-            raise ValueError("No usable model features found")
-        frame = data[available_features + ["Close"]].copy()
-        frame["Target"] = frame["Close"].shift(-1)
-        frame = frame.replace([np.inf, -np.inf], np.nan).dropna(subset=["Target"])
-        X = frame[available_features].apply(pd.to_numeric, errors="coerce")
-        y = pd.to_numeric(frame["Target"], errors="coerce")
+available_features = [col for col in self.features if col in data.columns]
+if "Close" not in data.columns:
+    raise ValueError("Close column is required for forecasting")
+if not available_features:
+    raise ValueError("No usable model features found")
+if "Close" not in available_features:
+    available_features = ["Close", *available_features]
+frame = data[available_features].copy()
+frame["Target"] = frame["Close"].shift(-1)
+frame = frame.replace([np.inf, -np.inf], np.nan).dropna(subset=["Target"])
+X = frame[available_features].apply(pd.to_numeric, errors="coerce")
+y = pd.to_numeric(frame["Target"], errors="coerce")
         valid = y.notna()
         return X.loc[valid], y.loc[valid]
 
