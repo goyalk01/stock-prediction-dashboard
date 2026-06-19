@@ -1,7 +1,11 @@
 {
-  "Technology": ["AAPL", "GOOGL", "MSFT", "NVDA"],
-  "Consumer Discretionary": ["TSLA", "AMZN"],
-  "Communication Services": ["META"],
-  "Healthcare": ["JNJ", "PFE"],
-  "Financial Services": ["JPM", "BAC"]
+  "Energy": ["RELIANCE.NS"],
+  "Information Technology": ["TCS.NS", "INFY.NS"],
+  "Financial Services": ["HDFCBANK.NS", "ICICIBANK.NS", "SBIN.NS", "AXISBANK.NS", "KOTAKBANK.NS"],
+  "Telecommunication": ["BHARTIARTL.NS"],
+  "Consumer Staples": ["ITC.NS", "HINDUNILVR.NS"],
+  "Industrials": ["LT.NS"],
+  "Automobile": ["MARUTI.NS", "TATAMOTORS.NS"],
+  "Healthcare": ["SUNPHARMA.NS"],
+  "ETF": ["NIFTYBEES.NS", "JUNIORBEES.NS", "BANKBEES.NS", "GOLDBEES.NS"]
 }

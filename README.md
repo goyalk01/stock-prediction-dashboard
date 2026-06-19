@@ -1,6 +1,6 @@
-# 📈 Stock Market Intelligence Dashboard
+# 🇮🇳 Free India Stock Market Intelligence Dashboard
 
-> **Advanced Stock Analysis & Prediction Platform with Real-time Data Integration**
+> **Free, India-centric NSE stock and ETF analysis platform using public data sources**
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28.0-red)](https://streamlit.io)
@@ -9,18 +9,18 @@
 
 ## 🚀 Project Overview
 
-This comprehensive stock market dashboard combines **machine learning**, **real-time data processing**, and **advanced visualization** to provide intelligent stock market analysis and predictions. Built with modern technologies including LSTM neural networks, interactive Streamlit interface, and professional-grade technical analysis.
+This dashboard is designed to stay **totally free for end users** while focusing on Indian markets. It uses public Yahoo Finance NSE tickers (`.NS`) for historical OHLCV data, Streamlit for the UI, Plotly for charts, and optional local LSTM training for educational forecasting.
 
 ### ✨ Key Features
 
-- **📊 Real-time Stock Data Integration** - Live data from Yahoo Finance API
+- **🇮🇳 India-first NSE Universe** - NIFTY 50 leaders and liquid ETFs using `.NS` Yahoo Finance symbols
 - **🤖 LSTM Neural Network Predictions** - Advanced deep learning for price forecasting
 - **📈 Professional Technical Analysis** - 15+ technical indicators and chart patterns
 - **🎯 Risk Assessment Tools** - Sharpe ratio, VaR, maximum drawdown analysis
 - **📱 Interactive Dashboard** - Responsive Streamlit web interface
 - **⚡ High-Performance Caching** - Optimized for speed and efficiency
 - **🔄 Multi-Stock Portfolio Analysis** - Compare and analyze multiple stocks
-- **📋 Investment Recommendations** - AI-driven buy/sell/hold signals
+- **📋 Educational Signals** - Rule-based buy/hold/sell-style signals with clear SEBI-aware disclaimers
 
 ## 🛠️ Technology Stack
 
@@ -30,25 +30,34 @@ This comprehensive stock market dashboard combines **machine learning**, **real-
 | **ML/AI** | TensorFlow/Keras | LSTM neural networks |
 | **Data Processing** | Pandas, NumPy | Data manipulation and analysis |
 | **Visualization** | Plotly, Matplotlib | Advanced charting and graphs |
-| **APIs** | Yahoo Finance (yfinance) | Real-time stock data |
-| **Technical Analysis** | TA-Lib | Professional indicators |
+| **Data Source** | Yahoo Finance via yfinance | Free NSE historical market data |
+| **Technical Analysis** | Pandas/NumPy utilities | Professional indicators without paid services |
 | **Deployment** | Streamlit Cloud | Cloud hosting |
 
 ## 🎯 Project Structure
 
 ```
 stock_prediction_dashboard/
-├── 📄 app.py                    # Main Streamlit application
-├── 📁 models/                   
-│   ├── lstm_model.py           # LSTM prediction models
-│   └── data_processor.py       # Data preprocessing utilities
-├── 📁 utils/                   
-│   ├── stock_data.py           # Stock data fetching
-│   ├── indicators.py           # Technical indicators
-│   └── visualization.py        # Advanced plotting
-├── 📁 data/                    # Data storage (auto-created)
-├── 📄 requirements.txt         # Python dependencies
-└── 📄 README.md               # Project documentation
+├── 📄 app.py                    # Streamlit app shell and orchestration
+├── 📄 render.yaml               # Free Render deployment configuration
+├── 📁 backend/                  # Production backend layer
+│   ├── api/market_data.py       # Free provider abstraction for yfinance/NSE data
+│   ├── core/settings.py         # Central market/runtime settings
+│   └── ml/ensemble_models.py    # Random Forest + Gradient Boosting ensemble
+├── 📁 frontend/                 # Frontend entrypoints
+│   └── streamlit_app.py         # Render/Streamlit launch module
+├── 📁 middleware/               # Shared middleware utilities
+│   └── cache.py                 # Lightweight TTL cache helper
+├── 📁 models/
+│   ├── lstm_model.py            # LSTM deep-learning model
+│   └── data_processor.py        # Data preprocessing utilities
+├── 📁 utils/
+│   ├── stock_data.py            # yfinance fetching implementation
+│   ├── indicators.py            # Technical indicators
+│   └── visualization.py         # Advanced plotting
+├── 📁 data/config/              # NSE stock universe and sectors
+├── 📄 requirements.txt          # Python dependencies
+└── 📄 README.md                 # Project documentation
 ```
 
 ## 🚀 Installation & Setup
@@ -80,7 +89,7 @@ stock_prediction_dashboard/
 
 4. **Launch Dashboard**
    ```bash
-   streamlit run app.py
+   streamlit run frontend/streamlit_app.py
    ```
 
 5. **Open in Browser**
@@ -100,7 +109,7 @@ docker run -p 8501:8501 stock-dashboard
 ## 💡 How to Use
 
 ### 1. **Stock Selection**
-- Choose from 15+ popular stocks (AAPL, GOOGL, MSFT, etc.)
+- Choose from Indian NSE stocks and ETFs such as RELIANCE.NS, TCS.NS, HDFCBANK.NS, and NIFTYBEES.NS
 - Select time period (1 month to 5 years)
 - Configure analysis options
 
@@ -111,14 +120,14 @@ docker run -p 8501:8501 stock-dashboard
 - **Trend Identification**: Bullish/bearish signals
 
 ### 3. **AI Predictions**
-- **LSTM Forecasting**: 30-day price predictions
+- **Fast Ensemble or LSTM Forecasting**: 30-day educational price forecasts
 - **Confidence Intervals**: Prediction accuracy bounds
 - **Trend Analysis**: Upside/downside potential
 - **Risk Assessment**: Volatility projections
 
-### 4. **Investment Recommendations**
+### 4. **Educational Signals**
 - **Scoring System**: Multi-factor analysis (1-5 scale)
-- **Buy/Sell Signals**: Clear actionable recommendations
+- **Buy/Hold/Sell-style Signals**: Educational signals, not financial advice
 - **Risk Metrics**: Sharpe ratio, VaR, drawdown analysis
 - **Portfolio Insights**: Diversification suggestions
 
@@ -136,7 +145,7 @@ docker run -p 8501:8501 stock-dashboard
 - Volume and momentum analysis
 
 ### 3. **AI Predictions**
-- LSTM-based price forecasts
+- Fast ensemble or LSTM-based price forecasts
 - Prediction confidence metrics
 - Support/resistance levels
 - Trend continuation signals
@@ -147,22 +156,36 @@ docker run -p 8501:8501 stock-dashboard
 - Beta coefficient
 - Value-at-Risk (VaR) calculations
 
-### 5. **Investment Recommendation**
-- Automated buy/sell/hold signals
+### 5. **Educational Signal**
+- Automated buy/hold/sell-style educational signals
 - Multi-factor scoring system
-- Risk-adjusted recommendations
+- Risk-adjusted educational notes
 - Performance projections
 
 ## 🔧 Advanced Configuration
 
-### API Keys Setup
-For enhanced features (optional):
+### Free India-Centric Configuration
 
-```python
-# Create .env file
-ALPHA_VANTAGE_API_KEY=your_api_key_here
-NEWS_API_KEY=your_news_api_key_here
-```
+No paid API keys are required for the default experience. The stock universe lives in `data/config/stock_symbols.csv` and uses NSE-compatible Yahoo Finance symbols such as `RELIANCE.NS`, `TCS.NS`, and `NIFTYBEES.NS`. Update that CSV to add more Indian stocks, ETFs, or sector baskets.
+
+
+### Forecasting Models
+
+The dashboard now supports two forecasting paths:
+
+1. **Fast Ensemble (recommended for free hosting)**
+   - Combines `RandomForestRegressor` and `GradientBoostingRegressor`.
+   - Trains faster than LSTM and is easier to run on free Render/Streamlit tiers.
+   - Best default for interactive requests.
+
+2. **LSTM Deep Learning**
+   - Keeps the existing TensorFlow/Keras sequence model.
+   - Better suited for offline/background retraining because it is heavier.
+   - Can be loaded from saved models for production once background jobs are added.
+
+### API/Data Connection Design
+
+`backend/api/market_data.py` provides a clean provider interface. The default provider is Yahoo Finance via `yfinance`, which is the easiest free source for NSE `.NS` symbols. Future free providers such as NSE archives, Stooq, or user-uploaded CSVs can be added behind the same interface without rewriting the Streamlit frontend.
 
 ### Model Customization
 Modify LSTM parameters in `models/lstm_model.py`:
@@ -196,6 +219,18 @@ predictor = StockPredictor(
 
 ## 🚀 Deployment Options
 
+
+### Render Free-Tier Deployment
+
+This repo includes `render.yaml` for a simple free deployment:
+
+```bash
+# Render uses this automatically when connected to the repository
+startCommand: streamlit run frontend/streamlit_app.py --server.port $PORT --server.address 0.0.0.0
+```
+
+For free hosting, keep **Fast Ensemble** as the default model and move LSTM retraining to a scheduled/background job before serving real users.
+
 ### 1. **Streamlit Cloud** (Recommended)
 1. Fork this repository
 2. Connect to [Streamlit Cloud](https://streamlit.io/cloud)
@@ -205,7 +240,7 @@ predictor = StockPredictor(
 ### 2. **Heroku Deployment**
 ```bash
 # Create Procfile
-echo "web: sh setup.sh && streamlit run app.py" > Procfile
+echo "web: sh setup.sh && streamlit run frontend/streamlit_app.py" > Procfile
 
 # Deploy to Heroku
 heroku create your-app-name
@@ -216,6 +251,40 @@ git push heroku main
 - Use containerized deployment with Docker
 - Configure auto-scaling for high traffic
 - Set up monitoring and logging
+
+
+## 🇮🇳 Free, Scalable, Production-Ready Roadmap
+
+Use these changes to make the app stronger while keeping it free and India-centric:
+
+### Product and Market Fit
+- Keep the default universe focused on NSE stocks and ETFs; add BSE (`.BO`) only as an advanced option to avoid confusing duplicates.
+- Add NIFTY 50, NIFTY Next 50, Bank NIFTY, sector index, ETF, and watchlist presets.
+- Display INR formatting, crore/lakh market-cap labels, Indian market hours, NSE holidays, and India-specific risk-free assumptions.
+- Replace any “recommendation” wording with “educational signal” unless you obtain appropriate regulatory review.
+
+### Free Data Strategy
+- Keep Yahoo Finance/yfinance as the default free source, but add a provider abstraction so NSE archives, Stooq, or user-uploaded CSVs can be plugged in later.
+- Cache all downloaded candles locally and refresh incrementally to reduce rate-limit risk.
+- Show a clear stale-data timestamp and graceful fallback when a free source is unavailable.
+- Avoid paid APIs, mandatory login, or proprietary datasets in the core workflow.
+
+### Scalability and Performance
+- Move model training to an offline/background job; the Streamlit request path should load cached models and precomputed indicators.
+- Add a lightweight SQLite/DuckDB cache for OHLCV data, features, model metrics, and analysis snapshots.
+- Use deterministic configuration files for stock universes, sectors, model settings, and feature flags.
+- Containerize the app and add health checks, structured logs, and basic resource limits.
+
+### Production Readiness
+- Pin dependencies, add CI checks, linting, unit tests, and smoke tests for data fetching, indicators, and dashboard startup.
+- Add error boundaries for network failures, empty symbols, insufficient history, and model-training failures.
+- Add observability for fetch latency, cache hits, model runtime, and user-selected symbols without collecting personal data.
+- Provide deployment profiles for Streamlit Community Cloud, Docker, and low-cost Indian cloud/VPS hosting.
+
+### Compliance and Trust
+- Keep strong disclaimers that the app is educational and not SEBI-registered investment advice.
+- Show methodology notes for indicators and ML forecasts, including limitations and backtesting caveats.
+- Avoid guaranteed-return language and separate factual metrics from generated signals.
 
 ## 🛡️ Security & Disclaimer
 
@@ -228,12 +297,12 @@ git push heroku main
 ### ⚠️ Important Disclaimer
 
 > This dashboard is designed for **educational and research purposes only**. All predictions, analyses, and recommendations should not be considered as financial advice. Always:
-> 
+>
 > - Conduct your own research
 > - Consult with qualified financial advisors
 > - Consider your risk tolerance
 > - Diversify your investments
-> 
+>
 > Past performance does not guarantee future results. Invest responsibly.
 
 ## 🤝 Contributing
@@ -258,7 +327,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Yahoo Finance** for providing free stock data API
+- **Yahoo Finance/yfinance** for free NSE-compatible market data access
 - **Streamlit** for the amazing web framework
 - **TensorFlow/Keras** for machine learning capabilities
 - **Plotly** for interactive visualizations
@@ -277,7 +346,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### 🚀 Ready to Start?
 
 ```bash
-streamlit run app.py
+streamlit run frontend/streamlit_app.py
 ```
 
-**Happy Trading! 📈💰**
+**Happy learning and investing responsibly! 📈🇮🇳**

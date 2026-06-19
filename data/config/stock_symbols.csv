@@ -1,8 +1,20 @@
 Symbol,Name,Sector,Exchange
-AAPL,Apple Inc,Technology,NASDAQ
-GOOGL,Alphabet Inc,Technology,NASDAQ
-MSFT,Microsoft Corp,Technology,NASDAQ
-TSLA,Tesla Inc,Consumer Discretionary,NASDAQ
-AMZN,Amazon.com Inc,Consumer Discretionary,NASDAQ
-META,Meta Platforms Inc,Communication Services,NASDAQ
-NVDA,NVIDIA Corp,Technology,NASDAQ
+RELIANCE.NS,Reliance Industries Ltd,Energy,NSE
+TCS.NS,Tata Consultancy Services Ltd,Information Technology,NSE
+HDFCBANK.NS,HDFC Bank Ltd,Financial Services,NSE
+ICICIBANK.NS,ICICI Bank Ltd,Financial Services,NSE
+INFY.NS,Infosys Ltd,Information Technology,NSE
+BHARTIARTL.NS,Bharti Airtel Ltd,Telecommunication,NSE
+SBIN.NS,State Bank of India,Financial Services,NSE
+ITC.NS,ITC Ltd,Consumer Staples,NSE
+LT.NS,Larsen & Toubro Ltd,Industrials,NSE
+AXISBANK.NS,Axis Bank Ltd,Financial Services,NSE
+KOTAKBANK.NS,Kotak Mahindra Bank Ltd,Financial Services,NSE
+HINDUNILVR.NS,Hindustan Unilever Ltd,Consumer Staples,NSE
+MARUTI.NS,Maruti Suzuki India Ltd,Automobile,NSE
+SUNPHARMA.NS,Sun Pharmaceutical Industries Ltd,Healthcare,NSE
+TATAMOTORS.NS,Tata Motors Ltd,Automobile,NSE
+NIFTYBEES.NS,Nippon India ETF Nifty 50,ETF,NSE
+JUNIORBEES.NS,Nippon India ETF Nifty Next 50,ETF,NSE
+BANKBEES.NS,Nippon India ETF Bank BeES,ETF,NSE
+GOLDBEES.NS,Nippon India ETF Gold BeES,ETF,NSE
