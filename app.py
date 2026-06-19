@@ -10,6 +10,7 @@ from datetime import timedelta
 import os
 import warnings
 import traceback
+from pathlib import Path
 
 # --- Import Backend Modules ---
 try:
@@ -29,8 +30,39 @@ warnings.filterwarnings("ignore")
 CONFIG = {
     'MODEL_EPOCHS': 20,
     'SEQUENCE_LENGTH': 60,
-    'CACHE_TTL': 600
+    'CACHE_TTL': 600,
+    'MARKET': 'India',
+    'CURRENCY_SYMBOL': '₹',
+    'RISK_FREE_RATE': 0.07,
+    'TRADING_DAYS': 252,
 }
+
+
+def load_stock_universe(config_path: str = 'data/config/stock_symbols.csv') -> pd.DataFrame:
+    """Load the free, India-centric NSE stock universe used by the dashboard."""
+    path = Path(config_path)
+    fallback = pd.DataFrame(
+        [
+            {'Symbol': 'RELIANCE.NS', 'Name': 'Reliance Industries Ltd', 'Sector': 'Energy', 'Exchange': 'NSE'},
+            {'Symbol': 'TCS.NS', 'Name': 'Tata Consultancy Services Ltd', 'Sector': 'Information Technology', 'Exchange': 'NSE'},
+            {'Symbol': 'HDFCBANK.NS', 'Name': 'HDFC Bank Ltd', 'Sector': 'Financial Services', 'Exchange': 'NSE'},
+        ]
+    )
+    if not path.exists():
+        return fallback
+    try:
+        universe = pd.read_csv(path)
+        required_columns = {'Symbol', 'Name', 'Sector', 'Exchange'}
+        if universe.empty or not required_columns.issubset(universe.columns):
+            return fallback
+        return universe.sort_values(['Sector', 'Name']).reset_index(drop=True)
+    except Exception:
+        return fallback
+
+
+def format_currency(value: float, currency_symbol: str = CONFIG['CURRENCY_SYMBOL']) -> str:
+    """Format prices for the selected market without paid localization services."""
+    return f'{currency_symbol}{value:,.2f}'
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -157,11 +189,13 @@ def fetch_and_process_data(symbol: str, period: str):
     Ensures returned processed_data has numeric single-column 'Close' and 'Target' series.
     """
     try:
-        fetcher = StockDataFetcher()
+        from backend.api.market_data import get_market_data_provider
+
+        provider = get_market_data_provider()
         processor = StockDataProcessor()
 
-        # Fetch raw data
-        raw_data = fetcher.fetch_stock_data(symbol, period)
+        # Fetch raw data through the provider abstraction so future free APIs can plug in cleanly
+        raw_data = provider.history(symbol, period)
         if raw_data is None or raw_data.empty:
             return None, None, "No data available"
 
@@ -218,6 +252,22 @@ def fetch_and_process_data(symbol: str, period: str):
 
 
 @st.cache_resource(show_spinner=False)
+def load_or_train_ensemble_model(symbol: str, processed_data: pd.DataFrame):
+    """Train a fast two-model ensemble for low-cost production deployments."""
+    try:
+        from backend.ml.ensemble_models import TabularEnsembleForecaster
+
+        forecaster = TabularEnsembleForecaster()
+        result = forecaster.fit_predict(processed_data, days=30)
+        metrics = result.metrics | {
+            "model_type": "Random Forest + Gradient Boosting Ensemble",
+            "model_weights": result.model_weights,
+        }
+        return forecaster, "Ensemble model trained successfully", metrics, result.predictions
+    except Exception as e:
+        return None, f"Ensemble model error: {str(e)}", None, None
+
+
 def load_or_train_model(symbol: str, processed_data: pd.DataFrame):
     try:
         processor = StockDataProcessor()
@@ -390,7 +440,7 @@ def main():
     st.markdown(
         """
     <div style='text-align: center; color: #666; margin-bottom: 2rem;'>
-    Advanced Stock Analysis & Prediction Platform with Real-time Data Integration
+    Free India-centric NSE analysis using public Yahoo Finance data (no paid API keys required)
     </div>
     """,
         unsafe_allow_html=True,
@@ -400,12 +450,23 @@ def main():
     st.sidebar.title("🔧 Dashboard Controls")
 
     # Stock selection
-    popular_stocks = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "NVDA", "META", "NFLX"]
+    stock_universe = load_stock_universe()
+    stock_options = stock_universe["Symbol"].tolist()
+    stock_labels = {
+        row.Symbol: f"{row.Name} ({row.Symbol}) · {row.Sector}"
+        for row in stock_universe.itertuples(index=False)
+    }
 
-    selected_symbol = st.sidebar.selectbox("📊 Select Stock Symbol", options=popular_stocks, index=0)
+    st.sidebar.caption("🇮🇳 NSE symbols use free Yahoo Finance tickers ending in .NS")
+    selected_symbol = st.sidebar.selectbox(
+        "📊 Select NSE Stock/ETF",
+        options=stock_options,
+        index=0,
+        format_func=lambda symbol: stock_labels.get(symbol, symbol),
+    )
 
     # Time period selection
-    time_periods = {"3 Months": "3mo", "6 Months": "6mo", "1 Year": "1y", "2 Years": "2y"}
+    time_periods = {"3 Months": "3mo", "6 Months": "6mo", "1 Year": "1y", "2 Years": "2y", "5 Years": "5y"}
 
     selected_period = st.sidebar.selectbox("⏰ Select Time Period", options=list(time_periods.keys()), index=2)
 
@@ -414,7 +475,14 @@ def main():
     show_technical = st.sidebar.checkbox("Technical Analysis", value=True)
     show_predictions = st.sidebar.checkbox("AI Price Predictions", value=True)
     show_risk = st.sidebar.checkbox("Risk Analysis", value=True)
-    show_recommendation = st.sidebar.checkbox("Investment Recommendation", value=True)
+    show_recommendation = st.sidebar.checkbox("Educational Signal", value=True)
+
+    model_mode = st.sidebar.selectbox(
+        "🤖 Forecast Model",
+        options=["Fast Ensemble (Recommended)", "LSTM Deep Learning"],
+        index=0,
+        help="The ensemble combines Random Forest + Gradient Boosting and is faster for free hosting. LSTM is heavier and best for offline jobs.",
+    )
 
     # Analysis button
     if st.sidebar.button("🚀 Analyze Stock", type="primary"):
@@ -442,8 +510,9 @@ def main():
 
                 # Step 2: Stock info
                 try:
-                    fetcher = StockDataFetcher()
-                    stock_info = fetcher.get_stock_info(selected_symbol)
+                    from backend.api.market_data import get_market_data_provider
+
+                    stock_info = get_market_data_provider().profile(selected_symbol)
                 except Exception as e:
                     stock_info = {"error": str(e)}
                     st.warning(f"Could not fetch company info: {e}")
@@ -456,16 +525,21 @@ def main():
                 predictions = None
 
                 if show_predictions:
-                    predictor, model_status, model_metrics = load_or_train_model(selected_symbol, processed_data)
+                    if model_mode.startswith("Fast Ensemble"):
+                        predictor, model_status, model_metrics, predictions = load_or_train_ensemble_model(
+                            selected_symbol, processed_data
+                        )
+                    else:
+                        predictor, model_status, model_metrics = load_or_train_model(selected_symbol, processed_data)
 
-                    if predictor:
-                        progress_bar.progress(85)
-                        status_text.text("🔮 Generating predictions...")
-                        try:
-                            predictions = predictor.predict_next_days(processed_data, days=30)
-                        except Exception as e:
-                            st.warning(f"Prediction generation failed: {e}")
-                            predictions = None
+                        if predictor:
+                            progress_bar.progress(85)
+                            status_text.text("🔮 Generating predictions...")
+                            try:
+                                predictions = predictor.predict_next_days(processed_data, days=30)
+                            except Exception as e:
+                                st.warning(f"Prediction generation failed: {e}")
+                                predictions = None
 
                 progress_bar.progress(100)
                 status_text.text("✅ Analysis complete!")
@@ -517,11 +591,11 @@ def main():
         daily_change = safe_column_access(processed_data, "Returns", 0.0) * 100.0
 
         with col1:
-            st.metric("💰 Current Price", f"${current_price:.2f}", f"{daily_change:+.2f}%")
+            st.metric("💰 Current Price", format_currency(current_price), f"{daily_change:+.2f}%")
 
         with col2:
             market_cap = stock_info.get("market_cap", 0) or 0
-            st.metric("📊 Market Cap", f"${market_cap/1e9:.1f}B" if market_cap else "N/A")
+            st.metric("📊 Market Cap", f"₹{market_cap/1e7:,.0f} Cr" if market_cap else "N/A")
 
         with col3:
             pe_ratio = stock_info.get("pe_ratio", 0)
@@ -614,7 +688,7 @@ def main():
                 returns = processed_data.get("Returns", pd.Series(dtype=float))
                 if isinstance(returns, pd.Series) and not returns.dropna().empty:
                     returns = returns.dropna()
-                    sharpe_ratio = analyzer.calculate_sharpe_ratio(returns)
+                    sharpe_ratio = analyzer.calculate_sharpe_ratio(returns, risk_free_rate=CONFIG['RISK_FREE_RATE'])
                     max_drawdown = abs(analyzer.calculate_max_drawdown(processed_data["Close"])) * 100
                     var_95 = abs(analyzer.calculate_var(returns)) * 100
 
@@ -631,9 +705,9 @@ def main():
             except Exception as e:
                 st.error(f"Risk analysis error: {e}")
 
-        # Investment Recommendation
+        # Educational Signal
         if show_recommendation:
-            st.markdown("## 💡 Investment Recommendation")
+            st.markdown("## 💡 Educational Signal")
             try:
                 rec_data = generate_investment_recommendation(processed_data, predictions)
                 col1, col2 = st.columns([1, 2])
@@ -653,7 +727,7 @@ def main():
             """
         <div class="warning-box">
         ⚠️ <strong>Educational Use Only:</strong> This dashboard is for learning purposes. 
-        Not financial advice. Always consult professionals before investing.
+        Not SEBI-registered investment advice. Always consult qualified professionals before investing.
         </div>
         """,
             unsafe_allow_html=True,

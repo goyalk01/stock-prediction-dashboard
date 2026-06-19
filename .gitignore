@@ -1,8 +1,28 @@
+# Python
 __pycache__/
-env/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environments
 .env
-data/cache/
-data/logs/
-data/processed/
+.venv/
+venv/
+stock_env/
+
+# App/runtime artifacts
 saved_models/
-*.pyc
+.cache/
+.streamlit/secrets.toml
+*.sqlite
+*.db
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
