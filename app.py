@@ -251,7 +251,7 @@ def fetch_and_process_data(symbol: str, period: str):
         return None, None, f"Error: {str(e)}"
 
 
-@st.cache_resource(show_spinner=False)
+@st.cache_resource(ttl=CONFIG["CACHE_TTL"], show_spinner=False)
 def load_or_train_ensemble_model(symbol: str, processed_data: pd.DataFrame):
     """Train a fast two-model ensemble for low-cost production deployments."""
     try:
