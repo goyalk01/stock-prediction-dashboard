@@ -13,6 +13,10 @@ def ttl_cache(seconds: int = 600) -> Callable:
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             key = args + tuple(sorted(kwargs.items()))
+            try:
+                hash(key)
+            except TypeError as exc:
+                raise TypeError("ttl_cache arguments must be hashable") from exc
             now = monotonic()
             if key in store:
                 created_at, value = store[key]
