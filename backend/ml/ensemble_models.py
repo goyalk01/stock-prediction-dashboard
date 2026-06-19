@@ -99,8 +99,15 @@ y = pd.to_numeric(frame["Target"], errors="coerce")
                 "MSE": float(mean_squared_error(y_test, ensemble_pred)),
                 "RMSE": float(np.sqrt(mean_squared_error(y_test, ensemble_pred))),
                 "R2": float(r2_score(y_test, ensemble_pred)),
-                "MAPE": float(np.mean(np.abs((y_test.to_numpy() - ensemble_pred) / y_test.to_numpy())) * 100),
-            }
+                "MAPE": float(
+                    np.nanmean(
+                        np.abs(
+                            (y_test.to_numpy() - ensemble_pred)
+                            / np.where(y_test.to_numpy() == 0, np.nan, y_test.to_numpy())
+                        )
+                    )
+                    * 100
+                ),
         )
         self.last_feature_row = X.tail(1).copy()
         for model in self.models.values():
